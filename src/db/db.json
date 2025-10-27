@@ -1,0 +1,33 @@
+{
+  "films": [
+    {
+      "filmId": "1",
+      "filmName": "admin",
+      "reviews": [
+        {
+          "userId": "1",
+          "rate": "5",
+          "comment": [
+            {
+              "commentId": "1",
+              "commentText": "test text"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "userId": "1",
+      "username": "admin",
+      "password": "Super@dmin123",
+      "reviews": [
+        {
+          "filmId": "1",
+          "commentRefs": ["1"]
+        }
+      ]
+    }
+  ]
+}
