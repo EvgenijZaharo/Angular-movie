@@ -19,14 +19,13 @@
     @if (movies().length > 0 && !isLoading()) {
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         @for (movie of movies(); track movie.imdbID) {
-          <div 
+          <div
             class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer transform hover:scale-105"
-            (click)="navigateToMovie(movie.imdbID)"
           >
             <div class="aspect-[2/3] relative">
               @if (movie.Poster && movie.Poster !== 'N/A') {
-                <img 
-                  [src]="movie.Poster" 
+                <img
+                  [src]="movie.Poster"
                   [alt]="movie.Title"
                   class="w-full h-full object-cover"
                 />

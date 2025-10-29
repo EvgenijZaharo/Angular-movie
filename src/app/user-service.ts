@@ -1,7 +1,7 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
-import { User, ApiError } from './interfaces';
+import {Injectable, inject} from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {Observable, catchError, throwError} from 'rxjs';
+import {User, ApiError} from './interfaces';
 
 export interface AuthResponse {
   accessToken: string;
@@ -26,21 +26,56 @@ export class UserService {
     register: `${this.BASE_URL}/register`,
   } as const;
 
-  getUsers(token?: string): Observable<User[]> {
-    return this.http.get<User[]>(this.ENDPOINTS.users, {
-      headers: this.getAuthHeaders(token)
-    }).pipe(
-      catchError(error => this.handleError(error))
-    );
+
+  protected readonly STORAGE_KEYS = {
+    token: 'auth_token',
+    user: 'auth_user',
+  } as const;
+
+   readTokenFromStorage(): string | null {
+    try {
+      return localStorage.getItem(this.STORAGE_KEYS.token);
+    } catch (error) {
+      console.error('Error reading token from storage:', error);
+      return null;
+    }
   }
 
-  getUserById(userId: string, token?: string): Observable<User> {
-    return this.http.get<User>(`${this.ENDPOINTS.users}/${userId}`, {
-      headers: this.getAuthHeaders(token)
-    }).pipe(
-      catchError(error => this.handleError(error))
-    );
+   readUserFromStorage(): User | null {
+    try {
+      const raw = localStorage.getItem(this.STORAGE_KEYS.user);
+      return raw ? (JSON.parse(raw) as User) : null;
+    } catch (error) {
+      console.error('Error reading user from storage:', error);
+      return null;
+    }
   }
+
+   saveTokenToStorage(token: string): void {
+    try {
+      localStorage.setItem(this.STORAGE_KEYS.token, token);
+    } catch (error) {
+      console.error('Error saving token to storage:', error);
+    }
+  }
+
+   saveUserToStorage(user: User): void {
+    try {
+      localStorage.setItem(this.STORAGE_KEYS.user, JSON.stringify(user));
+    } catch (error) {
+      console.error('Error saving user to storage:', error);
+    }
+  }
+
+   clearStorage(): void {
+    try {
+      localStorage.removeItem(this.STORAGE_KEYS.token);
+      localStorage.removeItem(this.STORAGE_KEYS.user);
+    } catch (error) {
+      console.error('Error clearing storage:', error);
+    }
+  }
+
 
   createUser(user: Omit<User, 'id' | 'createdAt'>): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(this.ENDPOINTS.register, user).pipe(
@@ -52,18 +87,6 @@ export class UserService {
     return this.http.post<AuthResponse>(this.ENDPOINTS.login, credentials).pipe(
       catchError(error => this.handleError(error))
     );
-  }
-
-  private getAuthHeaders(token?: string): HttpHeaders {
-    if (!token) {
-      return new HttpHeaders({
-        'Content-Type': 'application/json',
-      });
-    }
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    });
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {

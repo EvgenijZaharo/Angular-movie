@@ -17,7 +17,6 @@ export class ReviewService {
   }
 
   createReview(userId: string, imdbId: string, rating: number, reviewText: string): Observable<Review> {
-    // Ensure movie exists in database before creating review
     return this.movieService.ensureMovieInDb(imdbId).pipe(
       switchMap(() => {
         const reviewData = {
