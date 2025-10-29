@@ -1,0 +1,67 @@
+{
+  "users": [
+    {
+      "id": "1761595607361",
+      "login": "superTest",
+      "email": "test@test.com",
+      "password": "superTest123@",
+      "createdAt": "2025-10-27T20:06:47.361Z"
+    },
+    {
+      "id": "1761654283276",
+      "login": "superTest2",
+      "email": "tes2t@test.com",
+      "password": "superTest123@",
+      "createdAt": "2025-10-28T12:24:43.276Z"
+    }
+  ],
+  "films": [
+    {
+      "id": "1761749480267",
+      "title": "The Matrix Revolutions",
+      "year": "2003",
+      "genre": "Action, Sci-Fi",
+      "director": "Lana Wachowski, Lilly Wachowski",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMmNmMTEzODQtNmExMS00OGUxLWFkNTItMTM3NzBlNDk0YWU5XkEyXkFqcGc@._V1_SX300.jpg",
+      "rating": 0
+    },
+    {
+      "id": "1761749485020",
+      "title": "The Matrix Revolutions",
+      "year": "2003",
+      "genre": "Action, Sci-Fi",
+      "director": "Lana Wachowski, Lilly Wachowski",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMmNmMTEzODQtNmExMS00OGUxLWFkNTItMTM3NzBlNDk0YWU5XkEyXkFqcGc@._V1_SX300.jpg",
+      "rating": 0
+    },
+    {
+      "id": "1761749488887",
+      "title": "The Matrix Revolutions",
+      "year": "2003",
+      "genre": "Action, Sci-Fi",
+      "director": "Lana Wachowski, Lilly Wachowski",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMmNmMTEzODQtNmExMS00OGUxLWFkNTItMTM3NzBlNDk0YWU5XkEyXkFqcGc@._V1_SX300.jpg",
+      "rating": 0
+    },
+    {
+      "id": "1761749499864",
+      "title": "The Matrix Revolutions",
+      "year": "2003",
+      "genre": "Action, Sci-Fi",
+      "director": "Lana Wachowski, Lilly Wachowski",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMmNmMTEzODQtNmExMS00OGUxLWFkNTItMTM3NzBlNDk0YWU5XkEyXkFqcGc@._V1_SX300.jpg",
+      "rating": 0
+    },
+    {
+      "id": "1761749546321",
+      "title": "Attack on Titan the Movie: The Last Attack",
+      "year": "2024",
+      "genre": "Animation, Action, Adventure",
+      "director": "Yûichirô Hayashi",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNzVjOWEwYjEtNDJhOC00YjUyLThjMWItMDQwZGY1ODM4YzI3XkEyXkFqcGc@._V1_SX300.jpg",
+      "rating": 0
+    }
+  ],
+  "reviews": [],
+  "comments": []
+}

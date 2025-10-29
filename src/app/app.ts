@@ -1,12 +1,18 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {Component, inject} from '@angular/core';
+import {RouterModule, RouterOutlet} from '@angular/router';
+import {UserStore} from '../store/user-store';
+import {HeaderComponent} from '../pages/header-component/header-component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterModule, HeaderComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  protected readonly title = signal('untitled1');
+export class App{
+
+  userStore = inject(UserStore);
+  currentUser = this.userStore.currentUser();
+  isAuthentificated = this.userStore.isAuthenticated();
+
 }

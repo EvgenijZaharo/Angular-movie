@@ -1,0 +1,17 @@
+<header class="border-b border-gray-800">
+  <nav class="container mx-auto px-6 py-5 flex justify-between items-center">
+    <h1 class="text-3xl font-bold text-red-600">FilmFinder</h1>
+    <div class="flex items-center space-x-4">
+      @if (isAuthentificated){
+        <h3>Welcome back, {{currentUser?.login}}</h3>
+      } @else {
+      <a routerLink="authorization" class="text-gray-300 hover:text-white transition duration-300">Login</a>
+      <a routerLink="authorization" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg font-semibold transition duration-300">
+        Sign Up
+      </a>
+      }
+    </div>
+  </nav>
+</header>
+
+

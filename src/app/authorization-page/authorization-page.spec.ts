@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AutorizationPage } from './autorization-page';
+import { AutorizationPage } from './authorization-page';
 
 describe('AutorizationPage', () => {
   let component: AutorizationPage;

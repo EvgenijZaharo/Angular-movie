@@ -1,1 +1,48 @@
-<p>catalog-page works!</p>
+<main class="min-h-screen bg-gray-900 text-white py-16">
+  <div class="container mx-auto px-6">
+    <h1 class="text-4xl font-bold mb-8">
+      Search Results for "{{ searchQuery() }}"
+    </h1>
+
+    @if (isLoading()) {
+      <div class="flex justify-center items-center py-20">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-red-600"></div>
+      </div>
+    }
+
+    @if (error() && !isLoading()) {
+      <div class="bg-red-900/30 border border-red-600 text-red-300 px-6 py-4 rounded-lg">
+        <p class="text-lg">{{ error() }}</p>
+      </div>
+    }
+
+    @if (movies().length > 0 && !isLoading()) {
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        @for (movie of movies(); track movie.imdbID) {
+          <div 
+            class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer transform hover:scale-105"
+            (click)="navigateToMovie(movie.imdbID)"
+          >
+            <div class="aspect-[2/3] relative">
+              @if (movie.Poster && movie.Poster !== 'N/A') {
+                <img 
+                  [src]="movie.Poster" 
+                  [alt]="movie.Title"
+                  class="w-full h-full object-cover"
+                />
+              } @else {
+                <div class="w-full h-full bg-gray-700 flex items-center justify-center">
+                  <span class="text-gray-500 text-4xl">🎬</span>
+                </div>
+              }
+            </div>
+            <div class="p-4">
+              <h3 class="font-semibold text-lg mb-1 line-clamp-2">{{ movie.Title }}</h3>
+              <p class="text-gray-400 text-sm">{{ movie.Year }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</main>
