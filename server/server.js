@@ -33,23 +33,19 @@ async function writeDB(data) {
   }
 }
 
-// Generate simple token
 function generateToken(userId) {
   return Buffer.from(`${userId}-${Date.now()}`).toString('base64');
 }
 
-// Validate password (basic validation)
 function validatePassword(password) {
   const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/;
   return regex.test(password);
 }
 
 
-// POST /register - Register new user
 app.post('/register', async (req, res) => {
   const { login, email, password } = req.body;
 
-  // Validation
   if (!login || !email || !password) {
     return res.status(400).json({
       error: 'All fields are required'
@@ -77,7 +73,6 @@ app.post('/register', async (req, res) => {
 
   const db = await readDB();
 
-  // Check if user already exists
   const existingUser = db.users.find(u => u.email === email || u.login === login);
   if (existingUser) {
     return res.status(409).json({
@@ -85,7 +80,6 @@ app.post('/register', async (req, res) => {
     });
   }
 
-  // Create new user
   const newUser = {
     id: Date.now().toString(),
     login,
@@ -104,7 +98,6 @@ app.post('/register', async (req, res) => {
 
   const token = generateToken(newUser.id);
 
-  // Return user without password
   const { password: _, ...userWithoutPassword } = newUser;
 
   res.status(201).json({
@@ -113,7 +106,6 @@ app.post('/register', async (req, res) => {
   });
 });
 
-// POST /login - Login user
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -147,7 +139,6 @@ app.get('/users', async (req, res) => {
   res.json(usersWithoutPasswords);
 });
 
-// GET /users/:id - Get user by ID
 app.get('/users/:id', async (req, res) => {
   const db = await readDB();
   const user = db.users.find(u => u.id === req.params.id);
@@ -161,13 +152,11 @@ app.get('/users/:id', async (req, res) => {
 });
 
 
-// GET /films - Get all films
 app.get('/films', async (req, res) => {
   const db = await readDB();
   res.json(db.films);
 });
 
-// GET /films/:imdbId - Get film by IMDb ID
 app.get('/films/:imdbId', async (req, res) => {
   const db = await readDB();
   const film = db.films.find(f => f.imdbId === req.params.imdbId);
@@ -179,7 +168,6 @@ app.get('/films/:imdbId', async (req, res) => {
   res.json(film);
 });
 
-// POST /films - Create new film from OMDb data
 app.post('/films', async (req, res) => {
   const { imdbId, title, year, poster, plot, director, actors, genre, runtime, imdbRating } = req.body;
 
@@ -189,7 +177,6 @@ app.post('/films', async (req, res) => {
 
   const db = await readDB();
 
-  // Check if film already exists
   const existingFilm = db.films.find(f => f.imdbId === imdbId);
   if (existingFilm) {
     return res.json(existingFilm);

@@ -20,7 +20,6 @@ export interface UserState {
   error: ApiError | null;
 }
 
-// Movie interfaces
 export interface Movie {
   imdbId: string;
   title: string;
@@ -35,7 +34,6 @@ export interface Movie {
   createdAt?: string;
 }
 
-// OMDb API response interfaces
 export interface OmdbSearchItem {
   Title: string;
   Year: string;
@@ -80,7 +78,6 @@ export interface OmdbMovieDetail {
   Error?: string;
 }
 
-// Review and Comment interfaces
 export interface Review {
   id: string;
   userId: string;

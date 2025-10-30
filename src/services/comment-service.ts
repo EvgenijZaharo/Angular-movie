@@ -1,8 +1,8 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, switchMap} from 'rxjs';
-import {Comment} from './interfaces';
-import {MovieService} from '../services/movie-service';
+import {Comment} from '../app/interfaces';
+import {MovieService} from './movie-service';
 
 @Injectable({
   providedIn: 'root'

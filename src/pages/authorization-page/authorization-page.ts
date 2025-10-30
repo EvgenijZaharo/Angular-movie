@@ -1,6 +1,6 @@
-import {Component, inject, signal, computed, effect} from '@angular/core';
+import {Component, inject, signal, computed} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {InputField} from '../input-field/input-field';
+import {InputField} from '../../shared/input-field/input-field';
 import {UserStore} from '../../store/user-store';
 import {Router} from '@angular/router';
 
@@ -45,13 +45,6 @@ export class AuthorizationPage {
 
   isLoading = computed(() => this.userStore.isLoading());
   serverError = computed(() => this.userStore.error()?.error || null);
-
-  constructor() {
-    effect(() => {
-      const user = this.userStore.currentUser();
-      const isAuthenticated = this.userStore.isAuthenticated();
-    });
-  }
 
 
   protected OnSubmitLogin(): void {

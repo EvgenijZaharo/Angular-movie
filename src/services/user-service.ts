@@ -1,7 +1,7 @@
 import {Injectable, inject} from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {Observable, catchError, throwError} from 'rxjs';
-import {User, ApiError} from './interfaces';
+import {User, ApiError} from '../app/interfaces';
 
 export interface AuthResponse {
   accessToken: string;

@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angul
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {MovieService} from '../../services/movie-service';
-import {OmdbSearchItem} from '../interfaces';
+import {OmdbSearchItem} from '../../app/interfaces';
 
 @Component({
   selector: 'app-catalog-page',

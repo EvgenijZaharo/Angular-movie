@@ -1,7 +1,7 @@
 import { UserState, User, ApiError } from '../app/interfaces';
 import { signalStore, withMethods, withState, patchState, withComputed, withHooks } from '@ngrx/signals';
 import { inject } from '@angular/core';
-import { UserService,  LoginCredentials } from '../app/user-service';
+import { UserService,  LoginCredentials } from '../services/user-service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, tap, catchError, of, switchMap, finalize } from 'rxjs';
 
@@ -105,10 +105,6 @@ export const UserStore = signalStore(
         error: null,
       });
       console.log('User logged out successfully');
-    },
-
-    getToken(): string | null {
-      return store.token();
     },
 
     validateStoredAuth(): void {

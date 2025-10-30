@@ -4,6 +4,7 @@
     <div class="flex items-center space-x-4">
       @if (isAuthentificated){
         <h3>Welcome back, {{currentUser?.login}}</h3>
+        <button>Sign Out</button>
       } @else {
       <a routerLink="authorization" class="text-gray-300 hover:text-white transition duration-300">Login</a>
       <a routerLink="authorization" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg font-semibold transition duration-300">
