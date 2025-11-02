@@ -1,34 +1,29 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, switchMap} from 'rxjs';
+import {SERVER_URL} from '../app/api-token';
 import {Comment} from '../app/interfaces';
-import {MovieService} from './movie-service';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommentService {
-  private _backendUrl = "http://localhost:3000";
+  private _backendUrl = inject(SERVER_URL);
   http = inject(HttpClient);
-  movieService = inject(MovieService);
 
   getCommentsForMovie(imdbId: string): Observable<Comment[]> {
-    return this.http.get<Comment[]>(`${this._backendUrl}/comments/film/${imdbId}`);
+    return this.http.get<Comment[]>(`${this._backendUrl}/comments?imdbId=${imdbId}`);
   }
 
-  createComment(userId: string, imdbId: string, commentText: string, parentCommentId?: string): Observable<Comment> {
-    // Ensure movie exists in database before creating comment
-    return this.movieService.ensureMovieInDb(imdbId).pipe(
-      switchMap(() => {
-        const commentData = {
-          userId,
-          imdbId,
-          commentText,
-          parentCommentId
-        };
-        return this.http.post<Comment>(`${this._backendUrl}/comments`, commentData);
-      })
-    );
+  createComment(comment: Omit<Comment, 'id' | 'createdAt'>): Observable<Comment> {
+    return this.http.post<Comment>(`${this._backendUrl}/comments`, {
+      ...comment,
+      createdAt: new Date().toISOString()
+    });
+  }
+
+  deleteComment(id: string): Observable<void> {
+    return this.http.delete<void>(`${this._backendUrl}/comments/${id}`);
   }
 }
 

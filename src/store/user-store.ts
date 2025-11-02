@@ -2,8 +2,7 @@ import { UserState, User, ApiError } from '../app/interfaces';
 import { signalStore, withMethods, withState, patchState, withComputed, withHooks } from '@ngrx/signals';
 import { inject } from '@angular/core';
 import { UserService,  LoginCredentials } from '../services/user-service';
-import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, tap, catchError, of, switchMap, finalize } from 'rxjs';
+import { tap, catchError, of, finalize } from 'rxjs';
 
 export const UserStore = signalStore(
   { providedIn: 'root' },
@@ -24,77 +23,61 @@ export const UserStore = signalStore(
     isAuthenticated: isLoggedIn,
   })),
   withMethods((store, userService = inject(UserService)) => ({
-    setLoading(isLoading: boolean): void {
-      patchState(store, { isLoading });
+    register(userData: Omit<User, 'id' | 'createdAt'>, onSuccess?: () => void): void {
+      patchState(store, { isLoading: true, error: null });
+
+      userService.createUser(userData).pipe(
+        tap((response) => {
+          const { accessToken, user } = response;
+          if (accessToken && user) {
+            userService.saveTokenToStorage(accessToken);
+            userService.saveUserToStorage(user);
+            patchState(store, {
+              user,
+              token: accessToken,
+              isLoggedIn: true,
+              error: null,
+            });
+            console.log('User authenticated successfully');
+            onSuccess?.();
+          }
+        }),
+        catchError((error: ApiError) => {
+          patchState(store, { error });
+          console.error('Registration error:', error);
+          return of(null);
+        }),
+        finalize(() => patchState(store, { isLoading: false })),
+      ).subscribe();
     },
 
-    setError(error: ApiError | null): void {
-      patchState(store, { error });
+    login(credentials: LoginCredentials, onSuccess?: () => void): void {
+      patchState(store, { isLoading: true, error: null });
+
+      userService.login(credentials).pipe(
+        tap((response) => {
+          const { accessToken, user } = response;
+          if (accessToken && user) {
+            userService.saveTokenToStorage(accessToken);
+            userService.saveUserToStorage(user);
+            patchState(store, {
+              user,
+              token: accessToken,
+              isLoggedIn: true,
+              error: null,
+            });
+            console.log('User authenticated successfully');
+            onSuccess?.();
+          }
+        }),
+        catchError((error: ApiError) => {
+          patchState(store, { error });
+          console.error('Login error:', error);
+          return of(null);
+        }),
+        finalize(() => patchState(store, { isLoading: false })),
+      ).subscribe();
     },
-
-    clearError(): void {
-      patchState(store, { error: null });
-    },
-
-    register: rxMethod<Omit<User, 'id' | 'createdAt'>>(
-      pipe(
-        tap(() => patchState(store, { isLoading: true, error: null })),
-        switchMap((userData) =>
-          userService.createUser(userData).pipe(
-            tap((response) => {
-              const { accessToken, user } = response;
-              if (accessToken && user) {
-                userService.saveTokenToStorage(accessToken);
-                userService.saveUserToStorage(user);
-                patchState(store, {
-                  user,
-                  token: accessToken,
-                  isLoggedIn: true,
-                  error: null,
-                });
-                console.log('User authenticated successfully');
-              }
-            }),
-            catchError((error: ApiError) => {
-              patchState(store, { error });
-              console.error('Registration error:', error);
-              return of(null);
-            }),
-            finalize(() => patchState(store, { isLoading: false })),
-          ),
-        ),
-      ),
-    ),
-
-    login: rxMethod<LoginCredentials>(
-      pipe(
-        tap(() => patchState(store, { isLoading: true, error: null })),
-        switchMap((credentials) =>
-          userService.login(credentials).pipe(
-            tap((response) => {
-              const { accessToken, user } = response;
-              if (accessToken && user) {
-                userService.saveTokenToStorage(accessToken);
-                userService.saveUserToStorage(user);
-                patchState(store, {
-                  user,
-                  token: accessToken,
-                  isLoggedIn: true,
-                  error: null,
-                });
-                console.log('User authenticated successfully');
-              }
-            }),
-            catchError((error: ApiError) => {
-              patchState(store, { error: error });
-              console.error('Login error:', error);
-              return of(null);
-            }),
-            finalize(() => patchState(store, { isLoading: false })),
-          ),
-        ),
-      ),
-    ),
 
     logout(): void {
       userService.clearStorage();

@@ -13,6 +13,34 @@
       "email": "tes2t@test.com",
       "password": "superTest123@",
       "createdAt": "2025-10-28T12:24:43.276Z"
+    },
+    {
+      "id": "1761833361799",
+      "login": "tester2",
+      "email": "tester2@test.com",
+      "password": "Tester2@test.com",
+      "createdAt": "2025-10-30T14:09:21.799Z"
+    },
+    {
+      "id": "1761833891198",
+      "login": "tester3",
+      "email": "tester3@tester.com",
+      "password": "superTest123@",
+      "createdAt": "2025-10-30T14:18:11.198Z"
+    },
+    {
+      "id": "1761835128353",
+      "login": "teeeest1000",
+      "email": "teeeest1000@gmail.com",
+      "password": "superTest123@",
+      "createdAt": "2025-10-30T14:38:48.353Z"
+    },
+    {
+      "id": "1762110163631",
+      "login": "cabacher",
+      "email": "cabach@ch.com",
+      "password": "superTest123@",
+      "createdAt": "2025-11-02T19:02:43.631Z"
     }
   ],
   "films": [
@@ -22,8 +50,7 @@
       "year": "2003",
       "genre": "Action, Sci-Fi",
       "director": "Lana Wachowski, Lilly Wachowski",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMmNmMTEzODQtNmExMS00OGUxLWFkNTItMTM3NzBlNDk0YWU5XkEyXkFqcGc@._V1_SX300.jpg",
-      "rating": 0
+      "poster": "https://m.media-amazon.com/images/M/MV5BMmNmMTEzODQtNmExMS00OGUxLWFkNTItMTM3NzBlNDk0YWU5XkEyXkFqcGc@._V1_SX300.jpg"
     },
     {
       "id": "1761749485020",
@@ -31,8 +58,7 @@
       "year": "2003",
       "genre": "Action, Sci-Fi",
       "director": "Lana Wachowski, Lilly Wachowski",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMmNmMTEzODQtNmExMS00OGUxLWFkNTItMTM3NzBlNDk0YWU5XkEyXkFqcGc@._V1_SX300.jpg",
-      "rating": 0
+      "poster": "https://m.media-amazon.com/images/M/MV5BMmNmMTEzODQtNmExMS00OGUxLWFkNTItMTM3NzBlNDk0YWU5XkEyXkFqcGc@._V1_SX300.jpg"
     },
     {
       "id": "1761749488887",
@@ -40,8 +66,7 @@
       "year": "2003",
       "genre": "Action, Sci-Fi",
       "director": "Lana Wachowski, Lilly Wachowski",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMmNmMTEzODQtNmExMS00OGUxLWFkNTItMTM3NzBlNDk0YWU5XkEyXkFqcGc@._V1_SX300.jpg",
-      "rating": 0
+      "poster": "https://m.media-amazon.com/images/M/MV5BMmNmMTEzODQtNmExMS00OGUxLWFkNTItMTM3NzBlNDk0YWU5XkEyXkFqcGc@._V1_SX300.jpg"
     },
     {
       "id": "1761749499864",
@@ -49,8 +74,7 @@
       "year": "2003",
       "genre": "Action, Sci-Fi",
       "director": "Lana Wachowski, Lilly Wachowski",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMmNmMTEzODQtNmExMS00OGUxLWFkNTItMTM3NzBlNDk0YWU5XkEyXkFqcGc@._V1_SX300.jpg",
-      "rating": 0
+      "poster": "https://m.media-amazon.com/images/M/MV5BMmNmMTEzODQtNmExMS00OGUxLWFkNTItMTM3NzBlNDk0YWU5XkEyXkFqcGc@._V1_SX300.jpg"
     },
     {
       "id": "1761749546321",
@@ -58,10 +82,60 @@
       "year": "2024",
       "genre": "Animation, Action, Adventure",
       "director": "Yûichirô Hayashi",
-      "poster": "https://m.media-amazon.com/images/M/MV5BNzVjOWEwYjEtNDJhOC00YjUyLThjMWItMDQwZGY1ODM4YzI3XkEyXkFqcGc@._V1_SX300.jpg",
-      "rating": 0
+      "poster": "https://m.media-amazon.com/images/M/MV5BNzVjOWEwYjEtNDJhOC00YjUyLThjMWItMDQwZGY1ODM4YzI3XkEyXkFqcGc@._V1_SX300.jpg"
     }
   ],
-  "reviews": [],
-  "comments": []
+  "reviews": [
+    {
+      "id": "1762110078601",
+      "userId": "1761595607361",
+      "imdbId": "tt0234215",
+      "rating": 2,
+      "createdAt": "2025-11-02T19:01:18.573Z"
+    },
+    {
+      "id": "1762110485707",
+      "userId": "1761595607361",
+      "imdbId": "tt0133093",
+      "rating": 3,
+      "createdAt": "2025-11-02T19:11:18.360Z"
+    },
+    {
+      "id": "1762111833120",
+      "userId": "1762110163631",
+      "imdbId": "tt0133093",
+      "rating": 4,
+      "createdAt": "2025-11-02T19:30:33.105Z"
+    }
+  ],
+  "comments": [
+    {
+      "id": "1762110085997",
+      "userId": "1761595607361",
+      "imdbId": "tt0234215",
+      "commentText": "good",
+      "createdAt": "2025-11-02T19:01:25.949Z"
+    },
+    {
+      "id": "1762110184048",
+      "userId": "1762110163631",
+      "imdbId": "tt0133093",
+      "commentText": "cabach@ch.com",
+      "createdAt": "2025-11-02T19:03:04.032Z"
+    },
+    {
+      "id": "1762110753700",
+      "userId": "1761595607361",
+      "imdbId": "tt0133093",
+      "commentText": "heet",
+      "createdAt": "2025-11-02T19:12:33.661Z"
+    },
+    {
+      "id": "1762111838975",
+      "userId": "1762110163631",
+      "imdbId": "tt0133093",
+      "commentText": "aegwiegweg",
+      "createdAt": "2025-11-02T19:30:38.963Z"
+    }
+  ]
 }

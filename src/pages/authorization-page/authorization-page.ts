@@ -18,26 +18,33 @@ export class AuthorizationPage {
   userStore = inject(UserStore);
   router = inject(Router);
 
-  authorizationForm = new FormGroup({
-    login: new FormControl<string>('',{
-      validators: [
-        Validators.required,
-        Validators.minLength(5),
-        Validators.maxLength(20)
-      ],
+  private readonly emailValidators = [Validators.required, Validators.email];
+  private readonly passwordValidators = [
+    Validators.required,
+    Validators.minLength(8),
+    Validators.maxLength(32),
+    Validators.pattern('^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).*$')
+  ];
+  private readonly loginValidators = [
+    Validators.required,
+    Validators.minLength(5),
+    Validators.maxLength(20)
+  ];
+
+  authForm = new FormGroup({
+    login: new FormControl<string>('', {
+      validators: this.loginValidators,
       nonNullable: true
     }),
-    password: new FormControl<string>('',{
-      validators: [Validators.required, Validators.minLength(8), Validators.maxLength(32),
-        Validators.pattern('^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).*$')
-      ],
+    email: new FormControl<string>('', {
+      validators: this.emailValidators,
       nonNullable: true
     }),
-    email: new FormControl<string>('',{
-      validators: [Validators.required, Validators.email],
+    password: new FormControl<string>('', {
+      validators: this.passwordValidators,
       nonNullable: true
-    })
-  })
+    }),
+  });
 
   isLoginView = signal(true);
   successMessage = signal<string | null>(null);
@@ -46,62 +53,58 @@ export class AuthorizationPage {
   isLoading = computed(() => this.userStore.isLoading());
   serverError = computed(() => this.userStore.error()?.error || null);
 
+  submitButtonClass = computed(() =>
+    this.isLoginView()
+      ? 'w-full rounded-lg bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 px-4 py-3 text-sm font-semibold text-white shadow-md transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-opacity-50'
+      : 'w-full rounded-lg bg-green-600 hover:bg-green-700 focus:ring-green-500 px-4 py-3 text-sm font-semibold text-white shadow-md transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-opacity-50'
+  );
+
 
   protected OnSubmitLogin(): void {
-    this.userStore.clearError();
-    this.formError.set(null);
-    this.successMessage.set(null);
+    this.clearMessages();
 
-    console.log('Form valid:', this.authorizationForm.valid);
-    console.log('Login control:', {
-      value: this.authorizationForm.controls.login.value,
-      valid: this.authorizationForm.controls.login.valid,
-      errors: this.authorizationForm.controls.login.errors
-    });
-    console.log('Email control:', {
-      value: this.authorizationForm.controls.email.value,
-      valid: this.authorizationForm.controls.email.valid,
-      errors: this.authorizationForm.controls.email.errors
-    });
-    console.log('Password control:', {
-      value: this.authorizationForm.controls.password.value,
-      valid: this.authorizationForm.controls.password.valid,
-      errors: this.authorizationForm.controls.password.errors
-    });
+    const emailControl = this.authForm.controls.email;
+    const passwordControl = this.authForm.controls.password;
 
-    if(!this.authorizationForm.valid){
+    if (!emailControl.valid || !passwordControl.valid) {
       this.formError.set('Please fill in all fields correctly');
+      emailControl.markAsTouched();
+      passwordControl.markAsTouched();
       return;
     }
+    else{
 
     const credentials = {
-      email: this.authorizationForm.controls.email.value.trim(),
-      password: this.authorizationForm.controls.password.value.trim(),
+      email: emailControl.value.trim(),
+      password: passwordControl.value.trim(),
+    };
+    this.authForm.reset();
+    this.userStore.login(credentials, () => {
+      this.router.navigate(['']);
+    });
     }
-
-    this.userStore.login(credentials);
-    console.log('Login request sent');
   }
 
   protected OnSubmitRegister(): void {
-    this.userStore.clearError();
-    this.formError.set(null);
-    this.successMessage.set(null);
+    this.clearMessages();
 
-    if(!this.authorizationForm.valid){
+    if (!this.authForm.valid) {
       this.formError.set('Please fill in all fields correctly');
+      this.authForm.markAllAsTouched();
       return;
     }
+    else{
 
     const newUser = {
-      login: this.authorizationForm.controls.login.value.trim(),
-      password: this.authorizationForm.controls.password.value.trim(),
-      email: this.authorizationForm.controls.email.value.trim(),
+      login: this.authForm.controls.login.value.trim(),
+      password: this.authForm.controls.password.value.trim(),
+      email: this.authForm.controls.email.value.trim(),
+    };
+    this.authForm.reset();
+    this.userStore.register(newUser, () => {
+      this.router.navigate(['']);
+    });
     }
-
-    this.userStore.register(newUser);
-    console.log('Registration request sent');
-    this.authorizationForm.reset();
   }
 
   showLogin() {
@@ -115,7 +118,6 @@ export class AuthorizationPage {
   }
 
   private clearMessages() {
-    this.userStore.clearError();
     this.formError.set(null);
     this.successMessage.set(null);
   }

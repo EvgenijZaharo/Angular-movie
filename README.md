@@ -1,59 +1,77 @@
-# Untitled1
+# Mooovie
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.6.
+A movie application where you can search for movies, read reviews, and leave comments. Users can register and login to rate movies and add comments.
 
-## Development server
+## Tech Stack
 
-To start a local development server, run:
+- Angular 20
+- Express.js
+- JSON file database
+- OMDb API for movie data
+- Tailwind CSS
 
-```bash
-ng serve
-```
+## Prerequisites
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Node.js (v18 or higher)
+- npm
 
-## Code scaffolding
+## Installation
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+First, install dependencies for the main project:
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
+Then install dependencies for the server:
 
 ```bash
-ng build
+cd server
+npm install
+cd ..
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Running the Project
 
-## Running unit tests
+You need to run both the backend server and the Angular frontend.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Start the Backend Server
+
+Open a terminal and run:
 
 ```bash
-ng test
+cd server
+npm start
 ```
 
-## Running end-to-end tests
+The server will run on http://localhost:3000
 
-For end-to-end (e2e) testing, run:
+### Start the Frontend
+
+Open another terminal and run:
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The application will open at http://localhost:4200
 
-## Additional Resources
+Make sure both servers are running at the same time.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Project Structure
+
+- `src/app` - Main Angular application
+- `src/pages` - Page components (main, catalog, authorization, movie page)
+- `src/services` - API services for movies, users, reviews, comments
+- `src/store` - State management using signals
+- `src/shared` - Shared components (header, input field, movie comments)
+- `server` - Express backend server with JSON database
+
+## Features
+
+- User registration and login
+- Movie search using OMDb API
+- Movie catalog with details
+- User reviews and ratings
+- Comments on movies
+- Protected routes for authenticated users

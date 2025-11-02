@@ -21,8 +21,10 @@
         @for (movie of movies(); track movie.imdbID) {
           <div
             class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer transform hover:scale-105"
+            (click)="navigateToMovie(movie.imdbID)"
           >
-            <div class="aspect-[2/3] relative">
+            <div class="aspect-[2/3] relative"
+             >
               @if (movie.Poster && movie.Poster !== 'N/A') {
                 <img
                   [src]="movie.Poster"

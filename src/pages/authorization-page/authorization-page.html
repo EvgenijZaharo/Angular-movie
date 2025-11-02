@@ -66,98 +66,58 @@
       </button>
     </div>
 
-    @if (isLoginView()) {
-      <form [formGroup]="authorizationForm" (ngSubmit)="OnSubmitLogin()" class="space-y-6">
-        <div>
-          <label for="login-email" class="mb-2 block text-sm font-medium text-gray-700">Email Address</label>
-          <input-field formControlName="email" class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500
-          "/>
-          @if (authorizationForm.controls.email.invalid && authorizationForm.controls.email.touched) {
-            <p class="mt-1 text-xs text-red-600">Please enter a valid email address</p>
-          }
-        </div>
-
-        <div>
-          <div class="mb-2 flex items-center justify-between">
-            <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
-          </div>
-
-          <input-field formControlName="password"
-                       class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
-          @if (authorizationForm.controls.password.invalid && authorizationForm.controls.password.touched) {
-            <p class="mt-1 text-xs text-red-600">
-              @if (authorizationForm.controls.password.errors?.['required']) {
-                Password is required
-              } @else if (authorizationForm.controls.password.errors?.['minlength']) {
-                Password must be at least 8 characters
-              } @else if (authorizationForm.controls.password.errors?.['pattern']) {
-                Password must contain: uppercase letter, number, and special character
-              }
-            </p>
-          }
-        </div>
-
-        <button
-          type="submit"
-          class="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-md transition-all duration-300 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-        >
-          Login
-        </button>
-      </form>
-    } @else {
-      <form [formGroup]="authorizationForm" (ngSubmit)="OnSubmitRegister()" class="space-y-5">
+    <form [formGroup]="authForm" (ngSubmit)="isLoginView() ? OnSubmitLogin() : OnSubmitRegister()" class="space-y-5">
+      @if (!isLoginView()) {
         <div>
           <label for="reg-name" class="mb-2 block text-sm font-medium text-gray-700">Username</label>
-
           <input-field formControlName="login"
                        class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
-          @if (authorizationForm.controls.login.invalid && authorizationForm.controls.login.touched) {
+          @if (authForm.controls.login.invalid && authForm.controls.login.touched) {
             <p class="mt-1 text-xs text-red-600">
-              @if (authorizationForm.controls.login.errors?.['required']) {
+              @if (authForm.controls.login.errors?.['required']) {
                 Username is required
-              } @else if (authorizationForm.controls.login.errors?.['minlength']) {
+              } @else if (authForm.controls.login.errors?.['minlength']) {
                 Username must be at least 5 characters
-              } @else if (authorizationForm.controls.login.errors?.['maxlength']) {
+              } @else if (authForm.controls.login.errors?.['maxlength']) {
                 Username must not exceed 20 characters
               }
             </p>
           }
         </div>
+      }
 
+      <div>
+        <label for="email" class="mb-2 block text-sm font-medium text-gray-700">Email Address</label>
+        <input-field formControlName="email"
+                     class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+        @if (authForm.controls.email.invalid && authForm.controls.email.touched) {
+          <p class="mt-1 text-xs text-red-600">Please enter a valid email address</p>
+        }
+      </div>
+
+      <div>
+        <label for="password" class="mb-2 block text-sm font-medium text-gray-700">Password</label>
+        <input-field formControlName="password"
+                     class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+        @if (authForm.controls.password.invalid && authForm.controls.password.touched) {
+          <p class="mt-1 text-xs text-red-600">
+            @if (authForm.controls.password.errors?.['required']) {
+              Password is required
+            } @else if (authForm.controls.password.errors?.['minlength']) {
+              Password must be at least 8 characters
+            } @else if (authForm.controls.password.errors?.['pattern']) {
+              Password must contain: uppercase letter, number, and special character
+            }
+          </p>
+        }
+      </div>
+
+      @if (!isLoginView()) {
         <div>
-          <label for="reg-email" class="mb-2 block text-sm font-medium text-gray-700">Email Address</label>
-
-          <input-field formControlName="email"
-                       class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
-          @if (authorizationForm.controls.email.invalid && authorizationForm.controls.email.touched) {
-            <p class="mt-1 text-xs text-red-600">Please enter a valid email address</p>
-          }
-        </div>
-
-        <div>
-          <label for="reg-password" class="mb-2 block text-sm font-medium text-gray-700">Password</label>
-          <input-field formControlName="password"
-                       class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
-          @if (authorizationForm.controls.password.invalid && authorizationForm.controls.password.touched) {
-            <p class="mt-1 text-xs text-red-600">
-              @if (authorizationForm.controls.password.errors?.['required']) {
-                Password is required
-              } @else if (authorizationForm.controls.password.errors?.['minlength']) {
-                Password must be at least 8 characters
-              } @else if (authorizationForm.controls.password.errors?.['pattern']) {
-                Password must contain: uppercase letter, number, and special character
-              }
-            </p>
-          }
-        </div>
-
-        <div>
-          <label for="reg-confirm-password" class="mb-2 block text-sm font-medium text-gray-700">Confirm
-            Password</label>
+          <label for="reg-confirm-password" class="mb-2 block text-sm font-medium text-gray-700">Confirm Password</label>
           <input
             type="password"
             id="reg-confirm-password"
@@ -165,13 +125,11 @@
             class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
-        <button
-          type="submit"
-          class="w-full rounded-lg bg-green-600 px-4 py-3 text-sm font-semibold text-white shadow-md transition-all duration-300 ease-in-out hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-        >
-          Create Account
-        </button>
-      </form>
-    }
+      }
+
+      <button type="submit" [class]="submitButtonClass()">
+        {{ isLoginView() ? 'Login' : 'Create Account' }}
+      </button>
+    </form>
   </div>
 </div>

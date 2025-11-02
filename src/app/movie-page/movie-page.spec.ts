@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Comments } from './comments';
+import { MoviePage } from './movie-page';
 
-describe('Comments', () => {
-  let component: Comments;
-  let fixture: ComponentFixture<Comments>;
+describe('MoviePage', () => {
+  let component: MoviePage;
+  let fixture: ComponentFixture<MoviePage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Comments]
+      imports: [MoviePage]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Comments);
+    fixture = TestBed.createComponent(MoviePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

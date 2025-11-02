@@ -2,10 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs').promises;
 const path = require('path');
+const axios = require('axios');
 
 const app = express();
 const PORT = 3000;
 const DB_PATH = path.join(__dirname, 'db.json');
+const OMDB_API_URL = 'http://www.omdbapi.com/';
+const OMDB_API_KEY = '584a9ebe';
 
 app.use(cors({
   origin: ['http://localhost:4200', 'http://127.0.0.1:4200'],
@@ -37,37 +40,13 @@ function generateToken(userId) {
   return Buffer.from(`${userId}-${Date.now()}`).toString('base64');
 }
 
-function validatePassword(password) {
-  const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/;
-  return regex.test(password);
-}
-
-
 app.post('/register', async (req, res) => {
+
   const { login, email, password } = req.body;
 
   if (!login || !email || !password) {
     return res.status(400).json({
       error: 'All fields are required'
-    });
-  }
-
-  if (login.length < 5 || login.length > 20) {
-    return res.status(400).json({
-      error: 'Login must be between 5 and 20 characters'
-    });
-  }
-
-  if (!validatePassword(password)) {
-    return res.status(400).json({
-      error: 'Password must be at least 8 characters with 1 uppercase, 1 number, and 1 special character'
-    });
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({
-      error: 'Invalid email format'
     });
   }
 
@@ -139,6 +118,7 @@ app.get('/users', async (req, res) => {
   res.json(usersWithoutPasswords);
 });
 
+
 app.get('/users/:id', async (req, res) => {
   const db = await readDB();
   const user = db.users.find(u => u.id === req.params.id);
@@ -151,140 +131,194 @@ app.get('/users/:id', async (req, res) => {
   res.json(userWithoutPassword);
 });
 
+app.get('/movies/search', async (req, res) => {
+  const { title } = req.query;
 
-app.get('/films', async (req, res) => {
-  const db = await readDB();
-  res.json(db.films);
+  if (!title) {
+    return res.status(400).json({ error: 'Title parameter is required' });
+  }
+
+  try {
+    const response = await axios.get(`${OMDB_API_URL}?s=${title}&apikey=${OMDB_API_KEY}`);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching from OMDB:', error.message);
+    res.status(500).json({ error: 'Failed to search movies' });
+  }
 });
 
-app.get('/films/:imdbId', async (req, res) => {
-  const db = await readDB();
-  const film = db.films.find(f => f.imdbId === req.params.imdbId);
+app.get('/movies/details/:imdbId', async (req, res) => {
+  const { imdbId } = req.params;
 
-  if (!film) {
-    return res.status(404).json({ error: 'Film not found' });
+  try {
+    const response = await axios.get(`${OMDB_API_URL}?i=${imdbId}&apikey=${OMDB_API_KEY}`);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching movie details from OMDB:', error.message);
+    res.status(500).json({ error: 'Failed to fetch movie details' });
   }
-
-  res.json(film);
 });
 
-app.post('/films', async (req, res) => {
-  const { imdbId, title, year, poster, plot, director, actors, genre, runtime, imdbRating } = req.body;
-
-  if (!imdbId || !title) {
-    return res.status(400).json({ error: 'imdbId and title are required' });
-  }
-
-  const db = await readDB();
-
-  const existingFilm = db.films.find(f => f.imdbId === imdbId);
-  if (existingFilm) {
-    return res.json(existingFilm);
-  }
-
-  const newFilm = {
-    imdbId,
-    title,
-    year: year || '',
-    poster: poster || '',
-    plot: plot || '',
-    director: director || '',
-    actors: actors || '',
-    genre: genre || '',
-    runtime: runtime || '',
-    imdbRating: imdbRating || '',
-    createdAt: new Date().toISOString()
-  };
-
-  db.films.push(newFilm);
-
-  if (!await writeDB(db)) {
-    return res.status(500).json({ error: 'Failed to save film' });
-  }
-
-  res.status(201).json(newFilm);
-});
-
-
-// GET /reviews - Get all reviews
+// Reviews endpoints
 app.get('/reviews', async (req, res) => {
+  const { imdbId, userId } = req.query;
   const db = await readDB();
-  res.json(db.reviews);
+  
+  let reviews = db.reviews || [];
+  
+  if (imdbId) {
+    reviews = reviews.filter(r => r.imdbId === imdbId);
+  }
+  
+  if (userId) {
+    reviews = reviews.filter(r => r.userId === userId);
+  }
+  
+  res.json(reviews);
 });
 
-// GET /reviews/film/:imdbId - Get reviews for a specific film
-app.get('/reviews/film/:imdbId', async (req, res) => {
-  const db = await readDB();
-  const filmReviews = db.reviews.filter(r => r.imdbId === req.params.imdbId);
-  res.json(filmReviews);
-});
-
-// POST /reviews - Create new review
 app.post('/reviews', async (req, res) => {
-  const { userId, imdbId, rating, reviewText } = req.body;
+  const { userId, imdbId, rating, createdAt } = req.body;
 
-  if (!userId || !imdbId) {
-    return res.status(400).json({ error: 'userId and imdbId are required' });
+  if (!userId || !imdbId || rating === undefined) {
+    return res.status(400).json({
+      error: 'userId, imdbId, and rating are required'
+    });
+  }
+
+  if (rating < 0 || rating > 5) {
+    return res.status(400).json({
+      error: 'Rating must be between 0 and 5'
+    });
   }
 
   const db = await readDB();
+  
+  if (!db.reviews) {
+    db.reviews = [];
+  }
 
-  // Check if user exists
-  const user = db.users.find(u => u.id === userId);
-
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
+  // Check if user already has a review for this movie
+  const existingReview = db.reviews.find(r => r.userId === userId && r.imdbId === imdbId);
+  if (existingReview) {
+    return res.status(409).json({
+      error: 'User already has a review for this movie. Use PATCH to update.'
+    });
   }
 
   const newReview = {
     id: Date.now().toString(),
     userId,
     imdbId,
-    rating: rating || 0,
-    reviewText: reviewText || '',
-    createdAt: new Date().toISOString()
+    rating,
+    createdAt: createdAt || new Date().toISOString()
   };
 
   db.reviews.push(newReview);
 
   if (!await writeDB(db)) {
-    return res.status(500).json({ error: 'Failed to save review' });
+    return res.status(500).json({
+      error: 'Failed to save review'
+    });
   }
 
   res.status(201).json(newReview);
 });
 
+app.patch('/reviews/:id', async (req, res) => {
+  const { id } = req.params;
+  const { rating } = req.body;
 
-// GET /comments - Get all comments
+  if (rating === undefined) {
+    return res.status(400).json({
+      error: 'Rating is required'
+    });
+  }
+
+  if (rating < 0 || rating > 5) {
+    return res.status(400).json({
+      error: 'Rating must be between 0 and 5'
+    });
+  }
+
+  const db = await readDB();
+  
+  if (!db.reviews) {
+    db.reviews = [];
+  }
+
+  const reviewIndex = db.reviews.findIndex(r => r.id === id);
+
+  if (reviewIndex === -1) {
+    return res.status(404).json({
+      error: 'Review not found'
+    });
+  }
+
+  db.reviews[reviewIndex].rating = rating;
+  db.reviews[reviewIndex].createdAt = new Date().toISOString();
+
+  if (!await writeDB(db)) {
+    return res.status(500).json({
+      error: 'Failed to update review'
+    });
+  }
+
+  res.json(db.reviews[reviewIndex]);
+});
+
+app.delete('/reviews/:id', async (req, res) => {
+  const { id } = req.params;
+  const db = await readDB();
+  
+  if (!db.reviews) {
+    db.reviews = [];
+  }
+
+  const reviewIndex = db.reviews.findIndex(r => r.id === id);
+
+  if (reviewIndex === -1) {
+    return res.status(404).json({
+      error: 'Review not found'
+    });
+  }
+
+  db.reviews.splice(reviewIndex, 1);
+
+  if (!await writeDB(db)) {
+    return res.status(500).json({
+      error: 'Failed to delete review'
+    });
+  }
+
+  res.status(204).send();
+});
+
+// Comments endpoints
 app.get('/comments', async (req, res) => {
+  const { imdbId } = req.query;
   const db = await readDB();
-  res.json(db.comments || []);
+  
+  let comments = db.comments || [];
+  
+  if (imdbId) {
+    comments = comments.filter(c => c.imdbId === imdbId);
+  }
+  
+  res.json(comments);
 });
 
-// GET /comments/film/:imdbId - Get comments for a specific film
-app.get('/comments/film/:imdbId', async (req, res) => {
-  const db = await readDB();
-  const filmComments = (db.comments || []).filter(c => c.imdbId === req.params.imdbId);
-  res.json(filmComments);
-});
-
-// POST /comments - Create new comment
 app.post('/comments', async (req, res) => {
-  const { userId, imdbId, commentText, parentCommentId } = req.body;
+  const { userId, imdbId, commentText, createdAt } = req.body;
 
   if (!userId || !imdbId || !commentText) {
-    return res.status(400).json({ error: 'userId, imdbId, and commentText are required' });
+    return res.status(400).json({
+      error: 'userId, imdbId, and commentText are required'
+    });
   }
 
   const db = await readDB();
-
-  // Check if user exists
-  const user = db.users.find(u => u.id === userId);
-
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
+  
   if (!db.comments) {
     db.comments = [];
   }
@@ -294,17 +328,45 @@ app.post('/comments', async (req, res) => {
     userId,
     imdbId,
     commentText,
-    parentCommentId: parentCommentId || null,
-    createdAt: new Date().toISOString()
+    createdAt: createdAt || new Date().toISOString()
   };
 
   db.comments.push(newComment);
 
   if (!await writeDB(db)) {
-    return res.status(500).json({ error: 'Failed to save comment' });
+    return res.status(500).json({
+      error: 'Failed to save comment'
+    });
   }
 
   res.status(201).json(newComment);
+});
+
+app.delete('/comments/:id', async (req, res) => {
+  const { id } = req.params;
+  const db = await readDB();
+  
+  if (!db.comments) {
+    db.comments = [];
+  }
+
+  const commentIndex = db.comments.findIndex(c => c.id === id);
+
+  if (commentIndex === -1) {
+    return res.status(404).json({
+      error: 'Comment not found'
+    });
+  }
+
+  db.comments.splice(commentIndex, 1);
+
+  if (!await writeDB(db)) {
+    return res.status(500).json({
+      error: 'Failed to delete comment'
+    });
+  }
+
+  res.status(204).send();
 });
 
 app.listen(PORT, () => {

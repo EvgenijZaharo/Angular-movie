@@ -1,0 +1,28 @@
+.star-filled {
+  color: #fbbf24;
+  cursor: pointer;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.star-empty {
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.star-filled:hover {
+  color: #fcd34d;
+  filter: brightness(1.2);
+  transform: scale(1.1);
+}
+
+.star-empty:hover {
+  color: #9ca3af;
+  transform: scale(1.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+  max-height: 300px;
+}
+

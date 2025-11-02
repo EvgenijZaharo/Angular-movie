@@ -1,5 +1,5 @@
 export interface User {
-  id?: string;
+  id: string;
   login: string;
   email: string;
   password: string;
@@ -83,7 +83,6 @@ export interface Review {
   userId: string;
   imdbId: string;
   rating: number;
-  reviewText: string;
   createdAt: string;
 }
 
@@ -93,7 +92,6 @@ export interface Comment {
   imdbId: string;
   commentText: string;
   createdAt: string;
-  parentCommentId?: string;
 }
 
 export type onChangeFn<T> = (value: T) => void;

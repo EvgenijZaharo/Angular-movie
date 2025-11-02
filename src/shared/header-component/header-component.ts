@@ -12,7 +12,8 @@ import {UserStore} from '../../store/user-store';
 })
 export class HeaderComponent {
   userStore = inject(UserStore);
-  currentUser = this.userStore.currentUser();
-  isAuthentificated = this.userStore.isAuthenticated();
+  currentUser = this.userStore.currentUser;
+  isAuthentificated = this.userStore.isAuthenticated;
+  signOut = this.userStore.logout;
 
 }

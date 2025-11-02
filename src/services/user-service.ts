@@ -2,6 +2,7 @@ import {Injectable, inject} from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {Observable, catchError, throwError} from 'rxjs';
 import {User, ApiError} from '../app/interfaces';
+import {SERVER_URL} from '../app/api-token';
 
 export interface AuthResponse {
   accessToken: string;
@@ -19,7 +20,7 @@ export interface LoginCredentials {
 export class UserService {
   private http = inject(HttpClient);
 
-  private readonly BASE_URL = 'http://localhost:3000';
+  private readonly BASE_URL = inject(SERVER_URL);
   private readonly ENDPOINTS = {
     users: `${this.BASE_URL}/users`,
     login: `${this.BASE_URL}/login`,
@@ -85,6 +86,12 @@ export class UserService {
 
   login(credentials: LoginCredentials): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(this.ENDPOINTS.login, credentials).pipe(
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  getUserById(userId: string): Observable<User> {
+    return this.http.get<User>(`${this.ENDPOINTS.users}/${userId}`).pipe(
       catchError(error => this.handleError(error))
     );
   }

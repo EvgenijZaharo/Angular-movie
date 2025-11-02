@@ -1,0 +1,133 @@
+<div class="comments-section bg-gray-800 rounded-lg p-6 mt-8">
+  <div class="mb-8">
+    <h2 class="text-3xl font-bold mb-4">Ratings & Reviews</h2>
+    
+    @if (totalReviews() > 0) {
+      <div class="flex items-center gap-4 mb-6">
+        <div class="bg-yellow-600 text-white px-6 py-3 rounded-lg font-bold text-2xl">
+          ★ {{ averageRating() }}
+        </div>
+        <span class="text-gray-400 text-lg">
+          Based on {{ totalReviews() }} {{ totalReviews() === 1 ? 'rating' : 'ratings' }}
+        </span>
+      </div>
+    }
+    
+    @if (isAuthenticated()) {
+      <div class="bg-gray-700 rounded-lg p-6 mb-6">
+        <h3 class="text-xl font-semibold mb-3">Your Rating</h3>
+        <div class="flex items-center gap-2">
+          @for (star of [1, 2, 3, 4, 5]; track star) {
+            <button
+              type="button"
+              (click)="setRating(star)"
+              (mouseenter)="hoverRating(star)"
+              (mouseleave)="clearHover()"
+              [disabled]="isSaving()"
+              [class.star-filled]="isStarFilled(star)"
+              [class.star-empty]="!isStarFilled(star)"
+              class="text-4xl transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {{ isStarFilled(star) ? '★' : '☆' }}
+            </button>
+          }
+          @if (userReview()) {
+            <button
+              type="button"
+              (click)="deleteRating()"
+              class="ml-4 text-sm text-red-400 hover:text-red-300 underline"
+            >
+              Remove rating
+            </button>
+          }
+        </div>
+        @if (currentRating() > 0) {
+          <p class="text-gray-300 mt-2">You rated this movie {{ currentRating() }} out of 5 stars</p>
+        }
+      </div>
+    } @else {
+      <div class="bg-gray-700 rounded-lg p-4 mb-6 text-gray-300">
+        Please log in to rate this movie
+      </div>
+    }
+  </div>
+  
+  <div class="border-t border-gray-700 pt-6">
+    <h2 class="text-3xl font-bold mb-6">Comments ({{ comments().length }})</h2>
+    
+    @if (isAuthenticated()) {
+      <form [formGroup]="commentForm" (ngSubmit)="submitComment()" class="mb-8">
+        <div class="mb-4">
+          <label for="comment" class="block text-lg font-semibold mb-2">Leave a Comment</label>
+          <textarea
+            id="comment"
+            formControlName="commentText"
+            rows="4"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
+            placeholder="Share your thoughts about this movie..."
+            [class.border-red-500]="commentForm.get('commentText')?.invalid && commentForm.get('commentText')?.touched"
+          ></textarea>
+          @if (commentForm.get('commentText')?.invalid && commentForm.get('commentText')?.touched) {
+            <p class="text-red-400 text-sm mt-1">
+              @if (commentForm.get('commentText')?.errors?.['required']) {
+                Comment is required
+              }
+              @if (commentForm.get('commentText')?.errors?.['minlength']) {
+                Comment must be at least 3 characters long
+              }
+              @if (commentForm.get('commentText')?.errors?.['maxlength']) {
+                Comment must not exceed 500 characters
+              }
+            </p>
+          }
+        </div>
+        <button
+          type="submit"
+          [disabled]="commentForm.invalid || isSaving()"
+          class="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {{ isSaving() ? 'Submitting...' : 'Submit Comment' }}
+        </button>
+      </form>
+    } @else {
+      <div class="bg-gray-700 rounded-lg p-4 mb-6 text-gray-300">
+        Please log in to leave a comment
+      </div>
+    }
+    
+    @if (isLoading()) {
+      <div class="flex justify-center py-8">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+      </div>
+    } @else if (comments().length === 0) {
+      <div class="text-center py-12 text-gray-400">
+        <p class="text-xl">No comments yet</p>
+        <p class="mt-2">Be the first to share your thoughts!</p>
+      </div>
+    } @else {
+      <div class="space-y-6">
+        @for (comment of comments(); track comment.id) {
+          <div class="bg-gray-700 rounded-lg p-6">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <p class="font-semibold text-lg">{{ getUserLogin(comment.userId) }}</p>
+                <p class="text-gray-400 text-sm">{{ formatDate(comment.createdAt) }}</p>
+              </div>
+              @if (canDeleteComment(comment)) {
+                <button
+                  type="button"
+                  (click)="deleteComment(comment.id)"
+                  class="text-red-400 hover:text-red-300 text-sm underline"
+                >
+                  Delete
+                </button>
+              }
+            </div>
+            <p class="text-gray-200 leading-relaxed">{{ comment.commentText }}</p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
