@@ -15,6 +15,6 @@ export const routes: Routes = [
   },
   {
     path: 'movie/:imdbId',
-    loadComponent: () => import('./movie-page/movie-page').then(m => m.MoviePage),
+    loadComponent: () => import('../pages/movie-page/movie-page').then(m => m.MoviePage),
   }
 ];

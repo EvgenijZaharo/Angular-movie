@@ -1,7 +1,8 @@
 <input
   id="addItemValue"
-  placeholder="Add a new task..."
+  [placeholder]="placeholder()"
   [formControl]="taskControl"
+  [type] = "inputType()"
   (focus)="onFocus()"
   (blur)="onBlur()"
 >

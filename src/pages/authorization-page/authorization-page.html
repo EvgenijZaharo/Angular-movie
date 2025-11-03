@@ -71,6 +71,7 @@
         <div>
           <label for="reg-name" class="mb-2 block text-sm font-medium text-gray-700">Username</label>
           <input-field formControlName="login"
+                       [placeholder]="'Your username'"
                        class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
           @if (authForm.controls.login.invalid && authForm.controls.login.touched) {
@@ -90,6 +91,8 @@
       <div>
         <label for="email" class="mb-2 block text-sm font-medium text-gray-700">Email Address</label>
         <input-field formControlName="email"
+                     [inputType] = "'email'"
+                     [placeholder]="'Your email'"
                      class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         @if (authForm.controls.email.invalid && authForm.controls.email.touched) {
@@ -100,6 +103,8 @@
       <div>
         <label for="password" class="mb-2 block text-sm font-medium text-gray-700">Password</label>
         <input-field formControlName="password"
+                     [inputType] = "'password'"
+                     [placeholder]="'Your password'"
                      class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         @if (authForm.controls.password.invalid && authForm.controls.password.touched) {
@@ -117,13 +122,20 @@
 
       @if (!isLoginView()) {
         <div>
-          <label for="reg-confirm-password" class="mb-2 block text-sm font-medium text-gray-700">Confirm Password</label>
-          <input
-            type="password"
-            id="reg-confirm-password"
-            placeholder="Repeat your password"
-            class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          <label for="confirmPassword" class="mb-2 block text-sm font-medium text-gray-700">Confirm Password</label>
+          <input-field formControlName="confirmPassword"
+                       [placeholder]="'Confirm your password'"
+                       [inputType] = "'password'"
+                       class="w-full rounded-lg border border-gray-300 p-3 text-sm shadow-sm transition duration-200 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+
           />
+          @if (authForm.controls.confirmPassword.invalid && authForm.controls.confirmPassword.touched) {
+            <p class="mt-1 text-xs text-red-600">
+              @if (authForm.controls.confirmPassword) {
+                Passwords don't match
+              }
+            </p>
+          }
         </div>
       }
 

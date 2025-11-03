@@ -41,6 +41,41 @@
       "email": "cabach@ch.com",
       "password": "superTest123@",
       "createdAt": "2025-11-02T19:02:43.631Z"
+    },
+    {
+      "id": "1762164080772",
+      "login": "invalid",
+      "email": "invalid@dot.com",
+      "password": "superTest123@",
+      "createdAt": "2025-11-03T10:01:20.772Z"
+    },
+    {
+      "id": "1762165453204",
+      "login": "invalid2",
+      "email": "invalid2@dot.com",
+      "password": "superTest123@",
+      "createdAt": "2025-11-03T10:24:13.204Z"
+    },
+    {
+      "id": "1762165755813",
+      "login": "inasfasf",
+      "email": "wegweg@to.com",
+      "password": "superTest123@",
+      "createdAt": "2025-11-03T10:29:15.813Z"
+    },
+    {
+      "id": "1762166528805",
+      "login": "sdvwgwe",
+      "email": "srgr@gsg.com",
+      "password": "superTest123@",
+      "createdAt": "2025-11-03T10:42:08.805Z"
+    },
+    {
+      "id": "1762166630728",
+      "login": "sgerh",
+      "email": "wgweg@srg.co",
+      "password": "qwrqwW2352$",
+      "createdAt": "2025-11-03T10:43:50.728Z"
     }
   ],
   "films": [
@@ -94,13 +129,6 @@
       "createdAt": "2025-11-02T19:01:18.573Z"
     },
     {
-      "id": "1762110485707",
-      "userId": "1761595607361",
-      "imdbId": "tt0133093",
-      "rating": 3,
-      "createdAt": "2025-11-02T19:11:18.360Z"
-    },
-    {
       "id": "1762111833120",
       "userId": "1762110163631",
       "imdbId": "tt0133093",
@@ -136,6 +164,13 @@
       "imdbId": "tt0133093",
       "commentText": "aegwiegweg",
       "createdAt": "2025-11-02T19:30:38.963Z"
+    },
+    {
+      "id": "1762162428856",
+      "userId": "1761595607361",
+      "imdbId": "tt0133093",
+      "commentText": "aefwrgre",
+      "createdAt": "2025-11-03T09:33:48.844Z"
     }
   ]
 }

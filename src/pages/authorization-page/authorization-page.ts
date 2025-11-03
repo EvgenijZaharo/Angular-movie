@@ -1,8 +1,26 @@
 import {Component, inject, signal, computed} from '@angular/core';
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import {InputField} from '../../shared/input-field/input-field';
 import {UserStore} from '../../store/user-store';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+
+
+
+const confirmPassword: ValidatorFn = (control: AbstractControl,): ValidationErrors | null => {
+  const password = control.get('password');
+  const confirmPassword = control.get('confirmPassword');
+  if (!password?.value && !confirmPassword?.value) return null;
+  return password?.value !== confirmPassword?.value ? {mismatch: true} : null;
+};
 
 @Component({
   selector: 'app-authorization-page',
@@ -13,10 +31,13 @@ import {Router} from '@angular/router';
   templateUrl: './authorization-page.html',
   styleUrl: './authorization-page.css',
 })
+
 export class AuthorizationPage {
 
   userStore = inject(UserStore);
   router = inject(Router);
+  route = inject(ActivatedRoute);
+
 
   private readonly emailValidators = [Validators.required, Validators.email];
   private readonly passwordValidators = [
@@ -31,6 +52,7 @@ export class AuthorizationPage {
     Validators.maxLength(20)
   ];
 
+
   authForm = new FormGroup({
     login: new FormControl<string>('', {
       validators: this.loginValidators,
@@ -44,7 +66,10 @@ export class AuthorizationPage {
       validators: this.passwordValidators,
       nonNullable: true
     }),
-  });
+    confirmPassword: new FormControl<string>('', {
+      nonNullable: true
+    })
+  }, { validators: confirmPassword });
 
   isLoginView = signal(true);
   successMessage = signal<string | null>(null);
@@ -71,39 +96,37 @@ export class AuthorizationPage {
       emailControl.markAsTouched();
       passwordControl.markAsTouched();
       return;
-    }
-    else{
+    } else {
 
-    const credentials = {
-      email: emailControl.value.trim(),
-      password: passwordControl.value.trim(),
-    };
-    this.authForm.reset();
-    this.userStore.login(credentials, () => {
-      this.router.navigate(['']);
-    });
+      const credentials = {
+        email: emailControl.value.trim(),
+        password: passwordControl.value.trim(),
+      };
+      this.authForm.reset();
+      this.userStore.login(credentials, () => {
+        this.router.navigate(['']);
+      });
     }
   }
 
   protected OnSubmitRegister(): void {
     this.clearMessages();
-
+    console.log(this.authForm.controls.confirmPassword.value);
     if (!this.authForm.valid) {
       this.formError.set('Please fill in all fields correctly');
       this.authForm.markAllAsTouched();
       return;
-    }
-    else{
+    } else {
 
-    const newUser = {
-      login: this.authForm.controls.login.value.trim(),
-      password: this.authForm.controls.password.value.trim(),
-      email: this.authForm.controls.email.value.trim(),
-    };
-    this.authForm.reset();
-    this.userStore.register(newUser, () => {
-      this.router.navigate(['']);
-    });
+      const newUser = {
+        login: this.authForm.controls.login.value.trim(),
+        password: this.authForm.controls.password.value.trim(),
+        email: this.authForm.controls.email.value.trim(),
+      };
+      this.authForm.reset();
+      this.userStore.register(newUser, () => {
+        this.router.navigate(['']);
+      });
     }
   }
 
@@ -115,6 +138,16 @@ export class AuthorizationPage {
   showRegister() {
     this.isLoginView.set(false);
     this.clearMessages();
+  }
+
+  constructor() {
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed())
+      .subscribe((params) => {
+        const mode = params.get('mode');
+        this.isLoginView.set(mode !== 'register');
+        this.clearMessages();
+      });
   }
 
   private clearMessages() {

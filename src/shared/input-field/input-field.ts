@@ -3,6 +3,9 @@ import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModul
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {onChangeFn, onTouchFn} from '../../app/interfaces';
 
+
+
+type inputType = 'text' | 'password' | 'email';
 @Component({
   selector: 'input-field',
   imports: [
@@ -25,7 +28,8 @@ export class InputField implements ControlValueAccessor, OnInit {
 
   private destroyRef = inject(DestroyRef);
   readonly hasValidationError = input<boolean>(false);
-
+  placeholder = input<string>('');
+  inputType = input<inputType>('text')
   ngOnInit() {
     this.taskControl.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -39,6 +43,7 @@ export class InputField implements ControlValueAccessor, OnInit {
   private onTouch: onTouchFn = () => {
   };
   taskControl = new FormControl<string>('');
+
 
   protected hasError(): boolean {
     return this.hasValidationError();
@@ -64,6 +69,5 @@ export class InputField implements ControlValueAccessor, OnInit {
     this.onTouch();
     this.focusChange.emit(false);
   }
-
 }
 
