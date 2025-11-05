@@ -159,21 +159,20 @@ app.get('/movies/details/:imdbId', async (req, res) => {
   }
 });
 
-// Reviews endpoints
 app.get('/reviews', async (req, res) => {
   const { imdbId, userId } = req.query;
   const db = await readDB();
-  
+
   let reviews = db.reviews || [];
-  
+
   if (imdbId) {
     reviews = reviews.filter(r => r.imdbId === imdbId);
   }
-  
+
   if (userId) {
     reviews = reviews.filter(r => r.userId === userId);
   }
-  
+
   res.json(reviews);
 });
 
@@ -193,12 +192,11 @@ app.post('/reviews', async (req, res) => {
   }
 
   const db = await readDB();
-  
+
   if (!db.reviews) {
     db.reviews = [];
   }
 
-  // Check if user already has a review for this movie
   const existingReview = db.reviews.find(r => r.userId === userId && r.imdbId === imdbId);
   if (existingReview) {
     return res.status(409).json({
@@ -242,7 +240,7 @@ app.patch('/reviews/:id', async (req, res) => {
   }
 
   const db = await readDB();
-  
+
   if (!db.reviews) {
     db.reviews = [];
   }
@@ -270,7 +268,7 @@ app.patch('/reviews/:id', async (req, res) => {
 app.delete('/reviews/:id', async (req, res) => {
   const { id } = req.params;
   const db = await readDB();
-  
+
   if (!db.reviews) {
     db.reviews = [];
   }
@@ -298,13 +296,13 @@ app.delete('/reviews/:id', async (req, res) => {
 app.get('/comments', async (req, res) => {
   const { imdbId } = req.query;
   const db = await readDB();
-  
+
   let comments = db.comments || [];
-  
+
   if (imdbId) {
     comments = comments.filter(c => c.imdbId === imdbId);
   }
-  
+
   res.json(comments);
 });
 
@@ -318,7 +316,7 @@ app.post('/comments', async (req, res) => {
   }
 
   const db = await readDB();
-  
+
   if (!db.comments) {
     db.comments = [];
   }
@@ -345,7 +343,7 @@ app.post('/comments', async (req, res) => {
 app.delete('/comments/:id', async (req, res) => {
   const { id } = req.params;
   const db = await readDB();
-  
+
   if (!db.comments) {
     db.comments = [];
   }

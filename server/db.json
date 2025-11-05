@@ -134,6 +134,13 @@
       "imdbId": "tt0133093",
       "rating": 4,
       "createdAt": "2025-11-02T19:30:33.105Z"
+    },
+    {
+      "id": "1762239475533",
+      "userId": "1761595607361",
+      "imdbId": "tt0133093",
+      "rating": 1,
+      "createdAt": "2025-11-04T06:57:55.522Z"
     }
   ],
   "comments": [
@@ -164,13 +171,6 @@
       "imdbId": "tt0133093",
       "commentText": "aegwiegweg",
       "createdAt": "2025-11-02T19:30:38.963Z"
-    },
-    {
-      "id": "1762162428856",
-      "userId": "1761595607361",
-      "imdbId": "tt0133093",
-      "commentText": "aefwrgre",
-      "createdAt": "2025-11-03T09:33:48.844Z"
     }
   ]
 }
